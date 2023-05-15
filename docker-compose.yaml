@@ -1,0 +1,59 @@
+services:
+  mongo-db:
+    container_name: mongo-db
+    image: mongo
+    environment:
+      - MONGO_INITDB_ROOT_USERNAME=root
+      - MONGO_INITDB_ROOT_PASSWORD=root
+    restart: always
+    volumes:
+      - mongoDB:/data/db
+    command: --quiet --logpath /dev/null
+
+  user:
+    container_name: user
+    image: wiki-user
+    depends_on:
+      - mongo-db
+    build: ./user
+    env_file:
+      - ./user/.env
+      - ./.base.env
+    restart: always
+  
+  graphql-gateway:
+    container_name: graphql-gateway
+    depends_on:
+      - user
+    image: graphql-gatewap
+    build: ./graphql-gateway
+    env_file:
+      - ./graphql-gateway/.env
+      - ./.base.env
+    restart: always
+  
+  ws-server:
+    container_name: ws-server
+    build: ./socket
+    image: ws-server
+    restart: always
+    expose:
+      - 3012
+    env_file:
+      - ./.base.env
+  api-gateway:
+    container_name: api-gateway
+    depends_on:
+      - graphql-gateway
+    build: ./api-gateway
+    env_file:
+      - ./.base.env
+    restart: always
+    expose:
+      - 8080
+    environment:
+      - PORT=8080
+      - GRAPHQL_SERVER=http://graphql-gateway:2100
+      - USER_SERVER=http://user-server:8080
+    ports:
+      - "8080:8080"
