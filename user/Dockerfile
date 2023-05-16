@@ -5,10 +5,10 @@ RUN apk add git curl &&\
       apk add pkgconfig openssl-dev gcc musl-dev rustup &&\
       rm -rf /var/cache/apk/*
 
-COPY Cargo.toml ./
-RUN mkdir src && echo 'fn main() {}' > src/main.rs
+COPY Cargo.toml Cargo.lock ./
+RUN mkdir -p src && echo 'fn main() {}' > src/main.rs
 
-RUN --mount=type=cache,target=/usr/local/cargo/registry cargo build --release
+RUN --mount=type=cache,target=/usr/local/cargo/registry --mount=type=cache,target=/home/app/target cargo build --release
 
 RUN rm -rf src
 

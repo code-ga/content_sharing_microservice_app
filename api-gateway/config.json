@@ -1,0 +1,10 @@
+[
+  {
+    "endpoint": "/graphql/*",
+    "url": "env_GRAPHQL_SERVER"
+  },
+  {
+    "endpoint": "/user/*",
+    "url": "env_USER_SERVER"
+  }
+]
