@@ -6,13 +6,18 @@ RUN apk add git curl &&\
       rm -rf /var/cache/apk/*
 
 COPY Cargo.toml Cargo.lock ./
-RUN mkdir -p src && echo 'fn main() {}' > src/main.rs
+RUN mkdir -p src && echo 'fn main() {println!("hello world")}' > src/main.rs
 
-RUN --mount=type=cache,target=/usr/local/cargo/registry --mount=type=cache,target=/home/app/target cargo build --release
+RUN --mount=type=cache,target=/usr/local/cargo/registry cargo build --release
+
 
 RUN rm -rf src
 
-COPY . .
+COPY ./src /home/app/src
+
+RUN rm -rf ./target/release/incremental/user* && \ 
+      rm -rf ./target/release/deps/user*
+      
 RUN --mount=type=cache,target=/usr/local/cargo/registry cargo build --release
 
 FROM alpine

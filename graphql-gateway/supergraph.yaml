@@ -2,6 +2,6 @@ federation_version: 2
 
 subgraphs:
   user-service:
-    routing_url: http://shartube-user-server:8080/graphql
+    routing_url: http://user:8080/graphql
     schema:
-      subgraph_url: http://shartube-user-server:8080/graphql
+      subgraph_url: http://user:8080/graphql

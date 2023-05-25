@@ -12,7 +12,7 @@ services:
 
   user:
     container_name: user
-    image: wiki-user
+    image: user-services
     depends_on:
       - mongo-db
     build: ./user
